@@ -11,12 +11,21 @@ const useStyles = makeStyles(()=>({
     display: "flex",
     alignItems: "center",
   },
+    carouselItem: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      cursor: "pointer",
+      textTransform: "uppercase",
+      color: "white",
+    },
 }));
+
 
 const Carousel = () => {
   const [trending, setTrending] = useState([]);
   const classes = useStyles();
-  const {currency} = CryptoState();
+  const {currency, symbol} = CryptoState();
   const fetchTrendingCoins = async()=>{
     const {data} = await axios.get(TrendingCoins(currency))
     setTrending(data);
@@ -26,6 +35,7 @@ const Carousel = () => {
     fetchTrendingCoins();
   }, [currency]);
   const items = trending.map((coin)=>{
+    let profit = coin?.price_change_percentage_24h >= 0;
     return(
       <Link className={classes.carouselItem} to={`/coins/${coin.id}`}>
         <img
@@ -33,6 +43,22 @@ const Carousel = () => {
         alt = {coin.name}
         height = "80"
         style = {{marginBottom: 10}}/>
+        <span style = {{alignContent: "center"}}>
+          {coin?.symbol}
+          &nbsp;
+          <span alignItems="center"
+            style={{
+              color: profit > 0 ? "rgb(14, 203, 129)" : "red",
+              fontWeight: 500,
+            }}
+          >
+            {profit && "+"}
+            {coin?.price_change_percentage_24h?.toFixed(2)}%
+          </span>
+        </span>
+        <span alignItems = "center" style={{ fontSize: 22, fontWeight: 500 }}>
+          {symbol} {coin?.current_price.toFixed(2)}
+        </span>
       </Link>
     );
   })
@@ -47,7 +73,7 @@ const Carousel = () => {
   return (
     <div className={classes.carousel}>
       <AliceCarousel mouseTracking infinite autoPlay={1000}
-      animationDuration={1500} disableDotsControls responsive={responsive} items = {items}/>
+      animationDuration={1500} disableDotsControls disableButtonsControls responsive={responsive} items = {items}/>
     </div>
   )
 }
