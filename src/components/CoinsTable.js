@@ -25,7 +25,21 @@ import { CryptoState } from "../CryptoContext";
 export function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
-
+const useStyles = makeStyles({
+    row: {
+      backgroundColor: "#16171a",
+      cursor: "pointer",
+      "&:hover": {
+        backgroundColor: "#131111",
+      },
+      fontFamily: "Montserrat",
+    },
+    pagination: {
+      "& .MuiPaginationItem-root": {
+        color: "gold",
+      },
+    },
+  });
 export default function CoinsTable() {
   const [coins, setCoins] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -33,6 +47,7 @@ export default function CoinsTable() {
   const [page, setPage] = useState(1);
   const { currency, symbol } = CryptoState();
   const history = useHistory();
+  const classes = useStyles();
   const darkTheme = createTheme({
     palette: {
       primary: {
